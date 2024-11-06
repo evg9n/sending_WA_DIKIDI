@@ -123,8 +123,8 @@ celerybeat.pid
 #env/.env
 .venv
 env/*
-!env/.env.template
-!env/docker.env.template
+!env/app.env.template
+!env/client.env.template
 venv/
 ENV/
 env.bak/
@@ -163,3 +163,7 @@ cython_debug/
 
 #logger
 logs/*
+
+*.txt
+profile
+*.csv

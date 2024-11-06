@@ -32,6 +32,19 @@ class Constants:
         self.ROTATION_LOGGER = getenv('ROTATION_LOGGER', default='1 day')
         self.SERIALIZE_LOGGER = getenv('SERIALIZE_LOGGER', default=None) == 'True'
 
+        # app
+        self.PATH_WEBDRIVER = getenv('PATH_WEBDRIVER')
+        assert self.PATH_WEBDRIVER, 'Не указан PATH_WEBDRIVER'
+        self.XPATH_FIELD_INPUT = getenv('XPATH_FIELD_INPUT', default='')
+        self.XPATH_BUTTON = getenv('XPATH_BUTTON', default='')
+        self.OPEN_WINDOW = getenv('OPEN_WINDOW', default='') == 'true'
+
+        # client
+        self.PATH_FILE_MESSAGE_CLIENT = getenv('PATH_FILE_MESSAGE_CLIENT')
+        assert self.PATH_FILE_MESSAGE_CLIENT, 'Не указан PATH_FILE_MESSAGE_CLIENT'
+        self.PATH_FILE_CSV_CLIENT = getenv('PATH_FILE_CSV_CLIENT')
+        assert self.PATH_FILE_CSV_CLIENT, 'Не указан PATH_FILE_CSV_CLIENT'
+
     def __setattr__(self, name, value):
         if name in self.__dict__:
             raise AttributeError('Constants are not changeable!')

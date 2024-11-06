@@ -2,8 +2,11 @@
 from loguru import logger
 
 from os.path import abspath, join
+
+from clients import get_clients
 # Константы
 from constants import Constants
+from send import send
 
 constants = Constants()
 logger.remove()
@@ -26,12 +29,10 @@ logger.add(
 
 if __name__ == '__main__':
     logger.info('RUN PROJECT')
-    import os
 
-    # Получение абсолютного пути к текущему файлу
-    current_file_path = os.path.abspath(__file__)
-    # Получение директории, в которой находится текущий файл
-    current_directory = os.path.dirname(current_file_path)
+    c = Constants()
 
-    print("Абсолютный путь к текущему файлу:", current_file_path)
-    print("Директория текущего файла:", current_directory)
+    list_numbers = get_clients(c.PATH_FILE_CSV_CLIENT, delimiter=';')
+    if list_numbers:
+        send(path_driver=c.PATH_WEBDRIVER, path_file_message=c.PATH_FILE_MESSAGE_CLIENT, list_numbers=list_numbers,
+             xpath_button=c.XPATH_BUTTON, xpath_field_input=c.XPATH_FIELD_INPUT, open_window=c.OPEN_WINDOW)
