@@ -9,6 +9,8 @@ from selenium.webdriver.chrome.options import Options  # Для настроек
 from typing import Optional
 import time
 
+from loguru import logger
+
 
 def get_message(path_file_message: str) -> Optional[list]:
     """
@@ -60,29 +62,38 @@ def send(path_driver: str, path_file_message: str, list_numbers: list,
     # Открываем сайт
     with webdriver.Chrome(service=service, options=chrome_options) as driver:
 
-        if new:
-            driver.get(f'https://web.whatsapp.com')
-            input('После входа нажмите enter и перезапустите программу')
-        else:
-            message = get_message(path_file_message)
-            if message is None:
-                return
+        driver.get(f'https://web.whatsapp.com')
+        time.sleep(10)
+        if new or 'Используйте WhatsApp на' in driver.page_source:
+            logger.error("Не авторизован")
+            input('После входа нажмите enter и перезапустите программу: ')
+            return
 
-            for number in list_numbers:
-                driver.get(f'https://web.whatsapp.com/send/?phone=+{number}')
-                time.sleep(20)
-                field_input = driver.find_element(By.XPATH, xpath_field_input)
+        message = get_message(path_file_message)
+        if message is None:
+            return
 
-                actions = ActionChains(driver=driver)
-                actions.move_to_element(field_input)
+        for number in list_numbers:
+            driver.get(f'https://web.whatsapp.com/send/?phone=+{number}')
+            time.sleep(20)
+            field_input = driver.find_element(By.XPATH, xpath_field_input)
 
-                actions.click()
-                for line in message:
-                    actions.send_keys(line)
-                    actions.key_down(Keys.SHIFT).send_keys(Keys.ENTER).key_up(Keys.SHIFT)
+            actions = ActionChains(driver=driver)
+            actions.move_to_element(field_input)
 
-                actions.perform()
-                time.sleep(5)
-                button_send = driver.find_element(By.XPATH, xpath_button)
-                button_send.click()
-                time.sleep(5)
+            actions.click()
+            for line in message:
+                actions.send_keys(line)
+                actions.key_down(Keys.SHIFT).send_keys(Keys.ENTER).key_up(Keys.SHIFT)
+
+            # actions.perform()
+            time.sleep(5)
+
+            actions.send_keys(Keys.ENTER)
+            actions.perform()
+
+            # button_send = driver.find_element(By.XPATH, xpath_button)
+            # button_send.click()
+
+            logger.info(f'Отправлено на номер +{number}')
+            time.sleep(5)
